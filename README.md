@@ -64,3 +64,11 @@ sudo add-apt-repository ppa:neovim-ppa/unstable
 sudo apt-get update
 sudo apt-get install neovim
 ```
+## Font
+
+Install `FiraCode Nerd Font` from [Nerd Fonts](https://www.nerdfonts.com/font-downloads).
+
+Install the Mono serie from the zip file.
+
+## Kitty
+
