@@ -72,3 +72,10 @@ Install the Mono serie from the zip file.
 
 ## Kitty
 
+Install (Kitty)[https://sw.kovidgoyal.net/kitty/] terminal emulator with:
+
+```bash
+sudo apt install kitty
+```
+
+
