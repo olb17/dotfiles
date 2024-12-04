@@ -1,6 +1,11 @@
 vim.wo.relativenumber = true
 vim.wo.scrolloff = 5
 
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system clipboard" })
+
+-- When you do joins with J it will keep your cursor at the beginning instead of at the end
+vim.keymap.set("n", "J", "mzJ`z")
+
 return {
 	"mattn/emmet-vim",
 	"github/copilot.vim",
@@ -22,16 +27,6 @@ return {
 		"delphinus/auto-cursorline.nvim",
 		config = function()
 			require("auto-cursorline").setup({})
-		end,
-	},
-	{
-		-- run before launch, once, :Lazy build markdown-preview.nvim
-		"iamcco/markdown-preview.nvim",
-		cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
-		ft = { "markdown" },
-		build = function()
-			vim.cmd([[Lazy load markdown-preview.nvim]])
-			vim.fn["mkdp#util#install"]()
 		end,
 	},
 	{
