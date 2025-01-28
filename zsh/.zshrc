@@ -124,5 +124,5 @@ if [ -d ~/.zsh_init ]; then
 fi
 
 . /usr/share/doc/fzf/examples/key-bindings.zsh
-
+eval "$(zoxide init zsh)"
 # vim :set ts=4 sw=4 sts=4 et :
