@@ -6,6 +6,8 @@ vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system c
 -- When you do joins with J it will keep your cursor at the beginning instead of at the end
 vim.keymap.set("n", "J", "mzJ`z")
 
+require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/snippets" })
+
 return {
 	"mattn/emmet-vim",
 	"github/copilot.vim",
