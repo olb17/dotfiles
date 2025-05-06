@@ -12,18 +12,34 @@ return {
 	"mattn/emmet-vim",
 	"github/copilot.vim",
 	{
-		"CopilotC-Nvim/CopilotChat.nvim",
-		branch = "main",
+		"olimorris/codecompanion.nvim",
 		dependencies = {
-			{ "github/copilot.vim" }, -- or github/copilot.vim
-			{ "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
+			"nvim-lua/plenary.nvim",
+			"nvim-treesitter/nvim-treesitter",
+			"ravitemer/mcphub.nvim",
 		},
-		-- build = "make tiktoken", -- Only on MacOS or Linux
 		opts = {
-			debug = false, -- Enable debugging
-			-- See Configuration section for rest
+			strategies = {
+				-- Change the default chat adapter
+				chat = {
+					adapter = "copilot",
+				},
+			},
+			opts = {
+				-- Set debug logging
+				-- log_level = "DEBUG",
+			},
+			extensions = {
+				mcphub = {
+					callback = "mcphub.extensions.codecompanion",
+					opts = {
+						make_vars = true,
+						make_slash_commands = true,
+						show_result_in_chat = true,
+					},
+				},
+			},
 		},
-		-- See Commands section for default commands if you want to lazy load on them
 	},
 	{
 		"delphinus/auto-cursorline.nvim",
