@@ -39,7 +39,7 @@ return {
 				desc = "Markdown Preview",
 			},
 		},
-		ft = { "markdown" },
+		ft = { "markdown", "codecompanion" },
 		build = function()
 			vim.cmd([[Lazy load markdown-preview.nvim]])
 			vim.fn["mkdp#util#install"]()
