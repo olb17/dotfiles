@@ -48,17 +48,44 @@ return {
 				-- Set debug logging
 				-- log_level = "DEBUG",
 			},
-			extensions = {
-				mcphub = {
-					callback = "mcphub.extensions.codecompanion",
-					opts = {
-						make_vars = true,
-						make_slash_commands = true,
-						show_result_in_chat = true,
+		},
+		config = function()
+			require("codecompanion").setup({
+				extensions = {
+					mcphub = {
+						callback = "mcphub.extensions.codecompanion",
+						opts = {
+							show_result_in_chat = true, -- Show mcp tool results in chat
+							make_vars = true, -- Convert resources to #variables
+							make_slash_commands = true, -- Add prompts as /slash commands
+						},
 					},
 				},
-			},
-		},
+			})
+			local keys = {
+				{
+					"<leader>aa",
+					"<cmd>CodeCompanionChat<cr>",
+					desc = "Toggle Chat",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>ao",
+					"<cmd>CodeCompanionActions<cr>",
+					desc = "Options",
+					mode = { "n", "v" },
+				},
+				{
+					"<leader>av",
+					"<cmd>CodeCompanionAdd<cr>",
+					desc = "Add visual selected",
+					mode = { "v" },
+				},
+			}
+			for _, key in ipairs(keys) do
+				vim.keymap.set(key.mode, key[1], key[2], { desc = key.desc })
+			end
+		end,
 	},
 	{
 		"delphinus/auto-cursorline.nvim",
