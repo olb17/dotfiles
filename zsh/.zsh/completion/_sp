@@ -1,0 +1,11 @@
+#compdef sp
+_sp() {
+  local -a dirs names path
+  dirs=(~/code/*(/N))                # directories under ~/code, N = nullglob
+  (( ${#dirs} )) || return 1
+  names=()
+  for path in "${dirs[@]}"; do
+    names+=("${path:t}")
+  done
+  compadd -- "${names[@]}"
+}
