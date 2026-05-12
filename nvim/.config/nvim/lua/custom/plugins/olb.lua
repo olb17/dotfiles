@@ -8,8 +8,21 @@ vim.keymap.set("n", "J", "mzJ`z")
 
 require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/snippets" })
 
+vim.filetype.add({
+	extension = {
+		mjml = "mjml",
+	},
+})
+
 return {
+	"ec965/mjml-preview.nvim",
 	"mattn/emmet-vim",
+	{
+		"barrett-ruth/live-server.nvim",
+		build = "npm add -g live-server",
+		cmd = { "LiveServerStart", "LiveServerStop" },
+		config = true,
+	},
 	{
 		"delphinus/auto-cursorline.nvim",
 		config = function()
