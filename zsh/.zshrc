@@ -126,6 +126,8 @@ fi
 . /usr/share/doc/fzf/examples/key-bindings.zsh
 eval "$(zoxide init zsh)"
 
+eval "$(starship init zsh)"
+
 fpath=(~/.zsh/completion $fpath)
 autoload -Uz compinit
 compinit
