@@ -12,7 +12,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # ZSH_THEME="robbyrussell"
 ZSH_THEME="eastwood"
 
-ZSH_TMUX_AUTOSTART=true
+# ZSH_TMUX_AUTOSTART=true
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -74,7 +74,7 @@ ZSH_TMUX_AUTOSTART=true
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-prompt docker docker-compose mix asdf tmux)
+plugins=(git git-prompt docker docker-compose mix asdf)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -124,7 +124,7 @@ if [ -d ~/.zsh_init ]; then
 fi
 
 . /usr/share/doc/fzf/examples/key-bindings.zsh
-eval "$(zoxide init zsh)"
+eval "$(zoxide init zsh --cmd cd)"
 
 eval "$(starship init zsh)"
 

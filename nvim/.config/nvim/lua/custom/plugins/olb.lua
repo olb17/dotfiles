@@ -3,6 +3,10 @@ vim.wo.scrolloff = 5
 
 vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system clipboard" })
 
+-- Git conflict resolution
+vim.keymap.set("n", "<leader>go", "<cmd>diffget //2<CR>", { desc = "Git: take ours" })
+vim.keymap.set("n", "<leader>gt", "<cmd>diffget //3<CR>", { desc = "Git: take theirs" })
+--
 -- When you do joins with J it will keep your cursor at the beginning instead of at the end
 vim.keymap.set("n", "J", "mzJ`z")
 
@@ -15,6 +19,35 @@ vim.filetype.add({
 })
 
 return {
+	{
+		"folke/noice.nvim",
+	event = "VeryLazy",
+	dependencies = {
+		"MunifTanjim/nui.nvim",
+	},
+	opts = {
+		cmdline = {
+			enabled = true,
+			view = "cmdline_popup",
+		},
+		views = {
+			cmdline_popup = {
+				position = {
+					row = "50%",
+					col = "50%",
+				},
+				size = {
+					min_width = 60,
+					width = "auto",
+					height = "auto",
+				},
+				border = {
+					style = "rounded",
+				},
+			},
+		},
+		},
+	},
 	"ec965/mjml-preview.nvim",
 	"mattn/emmet-vim",
 	{
@@ -81,64 +114,169 @@ return {
 		end,
 	},
 	{
-		"christoomey/vim-tmux-navigator",
-		keys = {
-			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
-			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
-			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
-			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
-			{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
-		},
-	},
-	{
-		"folke/flash.nvim",
+		"lmilojevicc/herdr-splits.nvim",
+		-- For local development, swap the repo line for `dir = '/path/to/herdr-splits'`
+		-- (see "Local development" below).
+		cond = vim.env.HERDR_ENV == "1",
 		event = "VeryLazy",
-		---@type Flash.Config
-		opts = {},
-		--  -- stylua: ignore
+		-- Optional: auto-sync the Herdr-side scripts when lazy updates this plugin.
+		-- Requires `auto_sync_herdr = true` in setup() below to take effect.
+		-- build = ':lua require("herdr-splits").sync_herdr()',
+		config = function()
+			require("herdr-splits").setup({
+				-- Defaults shown. All fields optional.
+				default_amount = 0.03, -- Herdr resize ratio
+				neovim_amount = 3, -- Neovim resize cells
+				at_edge = "wrap", -- 'wrap' | 'stop' | 'split' | function
+				ignored_buftypes = { "nofile", "quickfix", "prompt", "help", "terminal" },
+				ignored_filetypes = {
+					"NvimTree",
+					-- sidebars
+					"neo-tree",
+					"snacks_dashboard",
+					"snacks_explorer",
+					"snacks_picker",
+					-- DB / REPL / data sidebars
+					"dadbod-ui",
+					"dbout",
+					-- outlines / symbols
+					"aerial",
+					"Outline",
+					-- diagnostics / quick lists
+					"Trouble",
+					"quickfix",
+				},
+				move_cursor_same_row = false,
+				herdr_bin = nil, -- auto-detected from HERDR_BIN_PATH
+				floating_zindex_max = 50, -- floats with zindex < this are treated as embedded sidebars
+				ignore_previewwindows = false, -- opt-in: also treat previewwindow windows (e.g. .dbout) as sidebars
+				-- auto_sync_herdr = true,      -- opt-in: sync Herdr-side scripts on update
+				-- Managed keys — written to the generated herdr-splits.conf so the
+				-- Herdr-side scripts agree. Pass Neovim notation (e.g. <M-Left>).
+				nav_keys = { left = "<C-h>", down = "<C-j>", up = "<C-k>", right = "<C-l>" },
+				resize_keys = { left = "<M-h>", down = "<M-j>", up = "<M-k>", right = "<M-l>" },
+				unzoom_on_nav = true, -- auto-unzoom when navigating away from a zoomed pane
+				nav_at_edge = "wrap", -- 'wrap' | 'stop' — Herdr pane-boundary wrap (distinct from at_edge)
+			})
+		end,
 		keys = {
 			{
-				"s",
-				mode = { "n", "x", "o" },
+				"<C-h>",
 				function()
-					require("flash").jump()
+					require("herdr-splits").move_cursor_left()
 				end,
-				desc = "Flash",
+				desc = "Navigate left",
 			},
 			{
-				"S",
-				mode = { "n", "x", "o" },
+				"<C-j>",
 				function()
-					require("flash").treesitter()
+					require("herdr-splits").move_cursor_down()
 				end,
-				desc = "Flash Treesitter",
+				desc = "Navigate down",
 			},
 			{
-				"r",
-				mode = "o",
+				"<C-k>",
 				function()
-					require("flash").remote()
+					require("herdr-splits").move_cursor_up()
 				end,
-				desc = "Remote Flash",
+				desc = "Navigate up",
 			},
 			{
-				"R",
-				mode = { "o", "x" },
+				"<C-l>",
 				function()
-					require("flash").treesitter_search()
+					require("herdr-splits").move_cursor_right()
 				end,
-				desc = "Treesitter Search",
+				desc = "Navigate right",
 			},
 			{
-				"<c-s>",
-				mode = { "c" },
+				"<M-h>",
 				function()
-					require("flash").toggle()
+					require("herdr-splits").resize_left()
 				end,
-				desc = "Toggle Flash Search",
+				desc = "Resize left",
+			},
+			{
+				"<M-j>",
+				function()
+					require("herdr-splits").resize_down()
+				end,
+				desc = "Resize down",
+			},
+			{
+				"<M-k>",
+				function()
+					require("herdr-splits").resize_up()
+				end,
+				desc = "Resize up",
+			},
+			{
+				"<M-l>",
+				function()
+					require("herdr-splits").resize_right()
+				end,
+				desc = "Resize right",
 			},
 		},
 	},
+	-- {
+	-- 	"christoomey/vim-tmux-navigator",
+	-- 	keys = {
+	-- 		{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+	-- 		{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+	-- 		{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+	-- 		{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+	-- 		{ "<c-\\>", "<cmd><C-U>TmuxNavigatePrevious<cr>" },
+	-- 	},
+	-- },
+	-- {
+	-- 	"folke/flash.nvim",
+	-- 	event = "VeryLazy",
+	-- 	---@type Flash.Config
+	-- 	opts = {},
+	-- 	--  -- stylua: ignore
+	-- 	keys = {
+	-- 		{
+	-- 			"s",
+	-- 			mode = { "n", "x", "o" },
+	-- 			function()
+	-- 				require("flash").jump()
+	-- 			end,
+	-- 			desc = "Flash",
+	-- 		},
+	-- 		{
+	-- 			"S",
+	-- 			mode = { "n", "x", "o" },
+	-- 			function()
+	-- 				require("flash").treesitter()
+	-- 			end,
+	-- 			desc = "Flash Treesitter",
+	-- 		},
+	-- 		{
+	-- 			"r",
+	-- 			mode = "o",
+	-- 			function()
+	-- 				require("flash").remote()
+	-- 			end,
+	-- 			desc = "Remote Flash",
+	-- 		},
+	-- 		{
+	-- 			"R",
+	-- 			mode = { "o", "x" },
+	-- 			function()
+	-- 				require("flash").treesitter_search()
+	-- 			end,
+	-- 			desc = "Treesitter Search",
+	-- 		},
+	-- 		{
+	-- 			"<c-s>",
+	-- 			mode = { "c" },
+	-- 			function()
+	-- 				require("flash").toggle()
+	-- 			end,
+	-- 			desc = "Toggle Flash Search",
+	-- 		},
+	-- 	},
+	-- },
 	{
 		"lukas-reineke/indent-blankline.nvim",
 		main = "ibl",
