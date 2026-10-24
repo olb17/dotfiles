@@ -661,8 +661,10 @@ require("lazy").setup({
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-			-- mason-lspconfig v2 uses the native Neovim 0.11+ LSP API.
-			-- Configure explicitly listed servers; mason-lspconfig enables installed servers.
+			-- Servers in this table get custom settings and are installed automatically.
+			-- Other LSPs installed interactively via :Mason are enabled too,
+			-- using their nvim-lspconfig defaults (automatic_enable = true).
+			-- Mason manages executables; Neovim's native LSP API manages configs.
 			for server_name, server in pairs(servers) do
 				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 				vim.lsp.config(server_name, server)
