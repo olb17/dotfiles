@@ -6,7 +6,7 @@ return {
 		require("harpoon").setup({})
 		require("telescope").load_extension("harpoon")
 
-		vim.keymap.set("n", "<leader>sh", ":Telescope harpoon marks<CR>", { desc = "[S]earch by [H]arpoon" })
+		vim.keymap.set("n", "<leader>sm", ":Telescope harpoon marks<CR>", { desc = "[S]earch by [H]arpoon" })
 
 		vim.keymap.set("n", "<leader>ha", require("harpoon.mark").add_file, { desc = "[H]arpoon [A]dd File" })
 		vim.keymap.set("n", "<leader>hh", require("harpoon.ui").toggle_quick_menu, { desc = "[H]arpoon s[H]ow menu" })
