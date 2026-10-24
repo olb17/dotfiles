@@ -23,6 +23,7 @@ local prettier_cmd = {
 vim.api.nvim_buf_create_user_command(0, "Format", function()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local input = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+	local changedtick = vim.api.nvim_buf_get_changedtick(bufnr)
 
 	vim.system(prettier_cmd, {
 		stdin = input,
@@ -34,6 +35,10 @@ vim.api.nvim_buf_create_user_command(0, "Format", function()
 			end
 
 			if obj.code == 0 then
+				if not vim.bo[bufnr].modifiable or vim.api.nvim_buf_get_changedtick(bufnr) ~= changedtick then
+					vim.notify("Prettier result discarded: buffer changed while formatting", vim.log.levels.WARN)
+					return
+				end
 				local lines = vim.split(obj.stdout, "\n", { plain = true })
 
 				-- Avoid adding an extra empty line at EOF
