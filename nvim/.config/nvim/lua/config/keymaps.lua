@@ -30,3 +30,12 @@ vim.keymap.set("n", "<C-h>", "<C-w><C-h>", { desc = "Move focus to the left wind
 vim.keymap.set("n", "<C-l>", "<C-w><C-l>", { desc = "Move focus to the right window" })
 vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower window" })
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
+
+vim.keymap.set({ "n", "v" }, "<leader>y", [["+y]], { desc = "[P]Yank to system clipboard" })
+
+-- Git conflict resolution
+vim.keymap.set("n", "<leader>go", "<cmd>diffget //2<CR>", { desc = "Git: take ours" })
+vim.keymap.set("n", "<leader>gt", "<cmd>diffget //3<CR>", { desc = "Git: take theirs" })
+
+-- Keep the cursor at the start of a joined line.
+vim.keymap.set("n", "J", "mzJ`z")
