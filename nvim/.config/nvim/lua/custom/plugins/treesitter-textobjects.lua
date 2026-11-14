@@ -1,51 +1,51 @@
 return {
-		"nvim-treesitter/nvim-treesitter-textobjects",
-		dependencies = { { "nvim-treesitter/nvim-treesitter" } },
-		config = function()
-			---@diagnostic disable-next-line: missing-fields
-			require("nvim-treesitter.configs").setup({
-				textobjects = {
-					select = {
-						enable = true,
+	"nvim-treesitter/nvim-treesitter-textobjects",
+	branch = "main",
+	dependencies = {
+		"nvim-treesitter/nvim-treesitter",
+	},
 
-						-- Automatically jump forward to textobj, similar to targets.vim
-						lookahead = true,
+	config = function()
+		local textobjects = require("nvim-treesitter-textobjects")
+		local select = require("nvim-treesitter-textobjects.select")
 
-						keymaps = {
-							-- You can use the capture groups defined in textobjects.scm
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							-- You can optionally set descriptions to the mappings (used in the desc parameter of
-							-- nvim_buf_set_keymap) which plugins like which-key display
-							["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
-							-- You can also use captures from other query groups like `locals.scm`
-							["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
-						},
-						-- You can choose the select mode (default is charwise 'v')
-						--
-						-- Can also be a function which gets passed a table with the keys
-						-- * query_string: eg '@function.inner'
-						-- * method: eg 'v' or 'o'
-						-- and should return the mode ('v', 'V', or '<c-v>') or a table
-						-- mapping query_strings to modes.
-						selection_modes = {
-							["@parameter.outer"] = "v", -- charwise
-							["@function.outer"] = "V", -- linewise
-							["@class.outer"] = "<c-v>", -- blockwise
-						},
-						-- If you set this to `true` (default is `false`) then any textobject is
-						-- extended to include preceding or succeeding whitespace. Succeeding
-						-- whitespace has priority in order to act similarly to eg the built-in
-						-- `ap`.
-						--
-						-- Can also be a function which gets passed a table with the keys
-						-- * query_string: eg '@function.inner'
-						-- * selection_mode: eg 'v'
-						-- and should return true or false
-						include_surrounding_whitespace = true,
-					},
+		-- Configure text object selection
+		textobjects.setup({
+			select = {
+				-- Automatically jump forward to the next text object
+				lookahead = true,
+
+				-- Selection mode for specific captures
+				selection_modes = {
+					["@parameter.outer"] = "v", -- Characterwise
+					["@function.outer"] = "V", -- Linewise
+					["@class.outer"] = "<c-v>", -- Blockwise
 				},
+
+				-- Include preceding or succeeding whitespace
+				include_surrounding_whitespace = true,
+			},
+		})
+
+		-- Helper for defining text object mappings
+		local function map(key, query, description, query_group)
+			vim.keymap.set({ "x", "o" }, key, function()
+				select.select_textobject(query, query_group or "textobjects")
+			end, {
+				desc = description,
+				silent = true,
 			})
-		end,
-	}
+		end
+
+		-- Function text objects
+		map("af", "@function.outer", "Select outer function")
+		map("if", "@function.inner", "Select inner function")
+
+		-- Class/module text objects
+		map("ac", "@class.outer", "Select outer class")
+		map("ic", "@class.inner", "Select inner part of a class region")
+
+		-- Language scope (locals.scm)
+		map("as", "@local.scope", "Select language scope", "locals")
+	end,
+}
