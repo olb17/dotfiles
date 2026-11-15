@@ -60,3 +60,7 @@ vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.wo.scrolloff = 5
+
+vim.g.markdown_folding = 1
+vim.o.foldlevelstart = 1
+vim.o.foldlevel = 1
